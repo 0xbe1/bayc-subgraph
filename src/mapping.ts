@@ -37,13 +37,13 @@ export function handleTransfer(event: TransferEvent): void {
             const traitType = obj.get('trait_type')
             const value = obj.get("value")
             if (traitType && value) {
-              if (traitType.toString() === "Background") token.background = value.toString()
-              if (traitType.toString() === "Clothes") token.clothes = value.toString()
-              if (traitType.toString() === "Earring") token.earring = value.toString()
-              if (traitType.toString() === "Eyes") token.eyes = value.toString()
-              if (traitType.toString() === "Fur") token.fur = value.toString()
-              if (traitType.toString() === "Hat") token.hat = value.toString()
-              if (traitType.toString() === "Mouth") token.mouth = value.toString()
+              if (traitType.toString() == "Background") token.background = value.toString()
+              if (traitType.toString() == "Clothes") token.clothes = value.toString()
+              if (traitType.toString() == "Earring") token.earring = value.toString()
+              if (traitType.toString() == "Eyes") token.eyes = value.toString()
+              if (traitType.toString() == "Fur") token.fur = value.toString()
+              if (traitType.toString() == "Hat") token.hat = value.toString()
+              if (traitType.toString() == "Mouth") token.mouth = value.toString()
             }
           }
         }
