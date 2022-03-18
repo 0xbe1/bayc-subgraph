@@ -1,53 +1,64 @@
+import { ipfs, json } from '@graphprotocol/graph-ts'
 import {
-  Approval as ApprovalEvent,
-  ApprovalForAll as ApprovalForAllEvent,
-  OwnershipTransferred as OwnershipTransferredEvent,
-  Transfer as TransferEvent
-} from "../generated/Token/Token"
+  Transfer as TransferEvent,
+  Token as TokenContract
+} from '../generated/Token/Token'
 import {
-  Approval,
-  ApprovalForAll,
-  OwnershipTransferred,
-  Transfer
-} from "../generated/schema"
+Token, User
+} from '../generated/schema'
 
-export function handleApproval(event: ApprovalEvent): void {
-  let entity = new Approval(
-    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-  )
-  entity.owner = event.params.owner
-  entity.approved = event.params.approved
-  entity.tokenId = event.params.tokenId
-  entity.save()
-}
-
-export function handleApprovalForAll(event: ApprovalForAllEvent): void {
-  let entity = new ApprovalForAll(
-    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-  )
-  entity.owner = event.params.owner
-  entity.operator = event.params.operator
-  entity.approved = event.params.approved
-  entity.save()
-}
-
-export function handleOwnershipTransferred(
-  event: OwnershipTransferredEvent
-): void {
-  let entity = new OwnershipTransferred(
-    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-  )
-  entity.previousOwner = event.params.previousOwner
-  entity.newOwner = event.params.newOwner
-  entity.save()
-}
+const ipfshash = "QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq"
 
 export function handleTransfer(event: TransferEvent): void {
-  let entity = new Transfer(
-    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-  )
-  entity.from = event.params.from
-  entity.to = event.params.to
-  entity.tokenId = event.params.tokenId
-  entity.save()
-}
+  /* load the token from the existing Graph Node */
+  const tryToken = Token.load(event.params.tokenId.toString())
+  const token = tryToken ? tryToken : new Token(event.params.tokenId.toString())
+    
+  token.tokenID = event.params.tokenId
+  token.tokenURI = "/" + event.params.tokenId.toString()
+
+  /* combine the ipfs hash and the token ID to fetch the token metadata from IPFS */
+  let metadata = ipfs.cat(ipfshash + token.tokenURI)
+  if (metadata) {
+    const value = json.fromBytes(metadata).toObject()
+    if (value) {
+      /* using the metatadata from IPFS, update the token object with the values  */
+      const image = value.get('image')
+      if (image) {
+        token.image = image.toString()
+        token.ipfsURI = 'ipfs.io/ipfs/' + ipfshash + token.tokenURI
+      }
+
+      const attributes = value.get('attributes')
+      if (attributes) {
+        const arr = attributes.toArray()
+        for (let i = 0; i < arr.length; i++) {
+          const attr = arr[i]  
+          const obj = attr.toObject()
+          const traitType = obj.mustGet('trait_type').toString()
+          const value = obj.mustGet('value').toString()
+          if (traitType === "Background") token.background = value
+          if (traitType === "Clothes") token.clothes = value
+          if (traitType === "Earring") token.earring = value
+          if (traitType === "Eyes") token.eyes = value
+          if (traitType === "Fur") token.fur = value
+          if (traitType === "Hat") token.hat = value
+          if (traitType === "Mouth") token.mouth = value
+        }
+      }
+    }
+  }
+
+  token.updatedAtTimestamp = event.block.timestamp
+
+  /* set or update the owner field and save the token to the Graph Node */
+  token.owner = event.params.to.toHexString()
+  token.save()
+  
+  /* if the user does not yet exist, create them */
+  let user = User.load(event.params.to.toHexString())
+  if (!user) {
+    user = new User(event.params.to.toHexString())
+    user.save()
+  }
+ }
