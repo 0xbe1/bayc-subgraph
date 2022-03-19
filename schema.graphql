@@ -4,13 +4,13 @@ type Token @entity {
   tokenURI: String!
   ipfsURI: String!
   image: String!
-  background: String!
-  clothes: String!
-  earring: String!
-  eyes: String!
-  fur: String!
-  hat: String!
-  mouth: String!
+  background: String
+  clothes: String
+  earring: String
+  eyes: String
+  fur: String
+  hat: String
+  mouth: String
   updatedAtTimestamp: BigInt!
   owner: User!
 }

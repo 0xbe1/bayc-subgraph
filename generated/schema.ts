@@ -20,13 +20,6 @@ export class Token extends Entity {
     this.set("tokenURI", Value.fromString(""));
     this.set("ipfsURI", Value.fromString(""));
     this.set("image", Value.fromString(""));
-    this.set("background", Value.fromString(""));
-    this.set("clothes", Value.fromString(""));
-    this.set("earring", Value.fromString(""));
-    this.set("eyes", Value.fromString(""));
-    this.set("fur", Value.fromString(""));
-    this.set("hat", Value.fromString(""));
-    this.set("mouth", Value.fromString(""));
     this.set("updatedAtTimestamp", Value.fromBigInt(BigInt.zero()));
     this.set("owner", Value.fromString(""));
   }
@@ -92,67 +85,123 @@ export class Token extends Entity {
     this.set("image", Value.fromString(value));
   }
 
-  get background(): string {
+  get background(): string | null {
     let value = this.get("background");
-    return value!.toString();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
   }
 
-  set background(value: string) {
-    this.set("background", Value.fromString(value));
+  set background(value: string | null) {
+    if (!value) {
+      this.unset("background");
+    } else {
+      this.set("background", Value.fromString(<string>value));
+    }
   }
 
-  get clothes(): string {
+  get clothes(): string | null {
     let value = this.get("clothes");
-    return value!.toString();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
   }
 
-  set clothes(value: string) {
-    this.set("clothes", Value.fromString(value));
+  set clothes(value: string | null) {
+    if (!value) {
+      this.unset("clothes");
+    } else {
+      this.set("clothes", Value.fromString(<string>value));
+    }
   }
 
-  get earring(): string {
+  get earring(): string | null {
     let value = this.get("earring");
-    return value!.toString();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
   }
 
-  set earring(value: string) {
-    this.set("earring", Value.fromString(value));
+  set earring(value: string | null) {
+    if (!value) {
+      this.unset("earring");
+    } else {
+      this.set("earring", Value.fromString(<string>value));
+    }
   }
 
-  get eyes(): string {
+  get eyes(): string | null {
     let value = this.get("eyes");
-    return value!.toString();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
   }
 
-  set eyes(value: string) {
-    this.set("eyes", Value.fromString(value));
+  set eyes(value: string | null) {
+    if (!value) {
+      this.unset("eyes");
+    } else {
+      this.set("eyes", Value.fromString(<string>value));
+    }
   }
 
-  get fur(): string {
+  get fur(): string | null {
     let value = this.get("fur");
-    return value!.toString();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
   }
 
-  set fur(value: string) {
-    this.set("fur", Value.fromString(value));
+  set fur(value: string | null) {
+    if (!value) {
+      this.unset("fur");
+    } else {
+      this.set("fur", Value.fromString(<string>value));
+    }
   }
 
-  get hat(): string {
+  get hat(): string | null {
     let value = this.get("hat");
-    return value!.toString();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
   }
 
-  set hat(value: string) {
-    this.set("hat", Value.fromString(value));
+  set hat(value: string | null) {
+    if (!value) {
+      this.unset("hat");
+    } else {
+      this.set("hat", Value.fromString(<string>value));
+    }
   }
 
-  get mouth(): string {
+  get mouth(): string | null {
     let value = this.get("mouth");
-    return value!.toString();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
   }
 
-  set mouth(value: string) {
-    this.set("mouth", Value.fromString(value));
+  set mouth(value: string | null) {
+    if (!value) {
+      this.unset("mouth");
+    } else {
+      this.set("mouth", Value.fromString(<string>value));
+    }
   }
 
   get updatedAtTimestamp(): BigInt {
